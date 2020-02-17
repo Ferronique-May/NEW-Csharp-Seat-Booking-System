@@ -1,0 +1,11 @@
+@{
+    ViewData["Title"] = "Events";
+
+}
+@using Csharp_Seat_Booking_System.Components;
+
+<div class="text-center">
+    <h1 class="display-4">Hello Shop</h1>
+</div>
+
+@(await Html.RenderComponentAsync<EventList>(RenderMode.ServerPrerendered))
