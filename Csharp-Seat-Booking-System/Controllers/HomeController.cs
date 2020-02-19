@@ -6,32 +6,44 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Csharp_Seat_Booking_System.Models;
-
+using Csharp_Seat_Booking_System.Services;
 namespace Csharp_Seat_Booking_System.Controllers
 {
     public class HomeController : Controller
-    {
-        private readonly ILogger<HomeController> _logger;
+    { 
 
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
+            public JsonFileProductService ProductService { get; }
+            public Product selectedProduct;
+            public string selectedProductId { set; get; }
+            public HomeController(JsonFileProductService productService)
+            {
+                this.ProductService = productService;
+            }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
+            [HttpGet] //response.
+            public IEnumerable<Product> Get()
+            {
+                return this.ProductService.GetProducts();
+            }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
+            //[HttpPatch] "fromBody"
+            [Route("Rate")]
+            [HttpGet]
+            public ActionResult Get([FromQuery] string ProductId, [FromQuery] int Rating)
+            {
+                ProductService.AddRating(ProductId, Rating);
+                return Ok();
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            }
+
+            [Route("First")]
+            [HttpGet]
+            public ActionResult Get([FromQuery] string productId)
+            {
+                selectedProductId = productId;
+                selectedProduct = ProductService.GetProducts().First(x => x.Id == productId);
+                return Ok();
+            }
         }
     }
-}
+

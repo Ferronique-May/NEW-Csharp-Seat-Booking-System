@@ -1,29 +1,28 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Csharp_Seat_Booking_System.Models
 {
-    public class Seat
+    public class Event
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int SeatId { get; set; }
+        public int EventId { get; set; }
         [Required(ErrorMessage = "Required")]
         [Display(Name = "Venue Id")]
-        public int VenueId { get; set; }
+        public string EventName { get; set; }
         [Required(ErrorMessage = "Required")]
         [Display(Name = "Seat Type")]
-        public int SeatCatergory { get; set; }
+        public string EventImg { get; set; }
         [Required(ErrorMessage = "Required")]
         [Display(Name = "Seat x")]
-        public int SeatXCordinate { get; set; }
+        public string EventDesc { get; set; }
         [Required(ErrorMessage = "Required")]
         [Display(Name = "Seat y")]
-        public int SeatYCordinate { get; set; }
+        public int VenueId { get; set; }
     }
 }

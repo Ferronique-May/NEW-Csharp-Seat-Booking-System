@@ -1,15 +1,17 @@
-
+using Csharp_Seat_Booking_System.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Csharp_Seat_Booking_System.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Csharp_Seat_Booking_System.Services;
 
 namespace Csharp_Seat_Booking_System
 {
@@ -26,11 +28,22 @@ namespace Csharp_Seat_Booking_System
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddRazorPages();
-            services.AddControllers();
             services.AddTransient<JsonFileProductService>();
-            services.AddServerSideBlazor();
-            services.AddControllersWithViews();
+            services.AddDbContext<CsharpSeatBookingSystemContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("CsharpSeatBookingSystemContext")));
+
+            services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            {
+                // options.User.RequireUniqueEmail = false;
+            })
+            .AddEntityFrameworkStores<Csharp_Seat_Booking_System.Data.CsharpSeatBookingSystemContext>()
+            .AddDefaultTokenProviders();
+
+            services.AddMvc();
+
+            // Adds a default in-memory implementation of IDistributedCache.
+            services.AddDistributedMemoryCache();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,13 +64,11 @@ namespace Csharp_Seat_Booking_System
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
-                endpoints.MapControllers();
-                endpoints.MapBlazorHub();
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
